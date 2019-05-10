@@ -11,19 +11,28 @@ import model.Pais;
 
 public class PaisDAO {
 
-	public void criar(Pais pais) {
+	public int criar(Pais pais) {
 		Connection conn = new ConnectionFactory().getConnection();
-		String sql = "INSER INTO Pais(id, nome, populacao, area) VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO Pais(nome, populacao, area) VALUES (?, ?, ?)";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sql)){
-			stm.setInt(1, pais.getId());
-			stm.setString(2, pais.getNome());
-			stm.setLong(3, pais.getPopulacao());
-			stm.setDouble(4, pais.getArea());
+			stm.setString(1, pais.getNome());
+			stm.setLong(2, pais.getPopulacao());
+			stm.setDouble(3, pais.getArea());
 			stm.executeUpdate();
+			String sqlQuery = "SELECT LAST_INSERT_ID()";
+			try (PreparedStatement stm2 = conn.prepareStatement(sqlQuery);
+					ResultSet rs = stm2.executeQuery();) {
+				if (rs.next()) {
+					pais.setId(rs.getInt(1));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		} catch (SQLException e) {
-			System.out.print("Erro ao criar o pais: "+e);
+			System.out.print("Erro ao criar o pais: "+ e);
 		}
+		return pais.getId();
 	}
 	
 	public void atualizar(Pais pais) {
@@ -57,12 +66,13 @@ public class PaisDAO {
 	public Pais carregar(int id) {
 		Pais pais = new Pais();
 		Connection conn = new ConnectionFactory().getConnection();
-		String sql = "SELECT nome, populacao, area FROM pais WHERE pais.id=?";
+		String sql = "SELECT nome, populacao, area FROM pais WHERE id=?";
 		
 		try(PreparedStatement stm = conn.prepareStatement(sql)){ 
-			stm.setInt(1, pais.getId());
+			stm.setInt(1, id);
 			try(ResultSet rs = stm.executeQuery()){
 				if(rs.next()) {
+					pais.setId(id);
 					pais.setNome(rs.getString("nome"));
 					pais.setPopulacao(rs.getLong("populacao"));
 					pais.setArea(rs.getDouble("area"));

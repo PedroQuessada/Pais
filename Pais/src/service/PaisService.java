@@ -13,8 +13,8 @@ public class PaisService implements Serializable{
 		dao = new PaisDAO();
 	}
 	
-	public void criar(Pais pais) {
-		dao.criar(pais);
+	public int criar(Pais pais) {
+		return dao.criar(pais);
 	}
 	
 	public void atualizar(Pais pais) {

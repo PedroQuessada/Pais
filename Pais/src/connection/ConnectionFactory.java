@@ -18,9 +18,9 @@ public class ConnectionFactory {
     public Connection getConnection() {
         String servidor = "localhost";
         String porta = "3306";
-        String database = "desenweb";
-        String usuario = "root";
-        String senha = "";
+        String database = "pais";
+        String usuario = "admin";
+        String senha = "12345";
         
         String connectionURL = "jdbc:mysql://" + servidor + ":" + porta + "/" + database + "?autoReconnect=true&useSSL=false&useTimezone=true&serverTimezone=UTC";
         
